@@ -1604,10 +1604,14 @@ def process_fun(config_dict, video_file, time_range, frame_rate, result_dir):
                 keypoints = keypoints_all[frame_nb]
                 scores = scores_all[frame_nb]
             else: 
-                # Detect poses
-                keypoints, scores = pose_tracker(frame)
-
-                # Track poses across frames
+                try:
+                    # Detect poses
+                    keypoints, scores = pose_tracker(frame)
+                except Exception as e:
+                    logging.error(f"Error during pose estimation: {e}")
+                    keypoints = np.full((1, len(keypoints_names), 2), np.nan)
+                    scores = np.full(1, len(keypoints_names), np.nan)
+                # # Track poses across frames
                 if tracking_mode == 'deepsort':
                     keypoints, scores = sort_people_deepsort(keypoints, scores, deepsort_tracker, frame, frame_count)
                 if tracking_mode == 'sports2d': 
