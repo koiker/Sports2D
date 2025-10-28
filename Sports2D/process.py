@@ -1748,8 +1748,13 @@ def process_fun(config_dict, video_file, time_range, frame_rate, result_dir):
                 if video_file == "webcam":
                     out_vid.write(frame)
 
-                # Detect poses
-                keypoints, scores = pose_tracker(frame)
+                # Detect poses with error handling
+                try:
+                    keypoints, scores = pose_tracker(frame)
+                except Exception as e:
+                    logging.error(f"Error during pose estimation: {e}")
+                    keypoints = np.full((1, len(keypoints_names), 2), np.nan)
+                    scores = np.full(1, len(keypoints_names), np.nan)
 
                 # Non maximum suppression (at pose level, not detection, and only using likely keypoints)
                 frame_shape = frame.shape
