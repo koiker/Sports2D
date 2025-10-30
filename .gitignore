@@ -7,3 +7,4 @@ logs.txt*
 dist/
 demo_Sports2D/**
 **/Demo/*.jpg
+.venv/
